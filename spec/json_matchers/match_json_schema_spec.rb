@@ -59,6 +59,73 @@ describe JsonMatchers, "#match_json_schema" do
     expect(json).to match_json_schema("api/v1/schema")
   end
 
+  it "Fails properly in local refs in referenced schema" do
+    create(:schema, name: "post", json: {
+      "$schema": "https://json-schema.org/draft-04/schema#",
+      "id": "file:/post.json#",
+      "definitions": {
+        "attributes": {
+          "type": "object",
+          "required": [
+            "id",
+            "name",
+          ],
+          "properties": {
+            "id": { "type": "number" },
+            "name": { "type": "string" }
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "attributes"
+      ],
+      "properties": {
+        "id": { "type": "number" },
+        "type": { "type": "string" },
+        "attributes": {
+          "$ref": "#/definitions/attributes",
+        }
+      }
+    })
+    posts_index = create(:schema, name: "posts/index", json: {
+      "$schema": "https://json-schema.org/draft-04/schema#",
+      "id": "file:/posts/index.json#",
+      "type": "object",
+      "required": [
+        "data"
+      ],
+      "definitions": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "file:/post.json#"
+          }
+        }
+      },
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/posts"
+        }
+      }
+    })
+
+    json = build(:response, {
+      "data": [{
+        "id": "1",
+        "type": "Post",
+        "attributes": {
+          "id": "1",
+          "name": "The Post's Name"
+        }
+      }]
+    })
+
+    expect(json).not_to match_json_schema(posts_index)
+  end
+
   it "can reference a schema relatively" do
     create(:schema, name: "post", json: {
       "$schema": "https://json-schema.org/draft-04/schema#",
