@@ -143,7 +143,7 @@ describe JsonMatchers, "#match_json_schema" do
           "type": "object",
           "required": [
             "id",
-            "name",
+            "name"
           ],
           "properties": {
             "id": { "type": "string" },
@@ -151,13 +151,13 @@ describe JsonMatchers, "#match_json_schema" do
             "user": {
               "type": "object",
               "required": [
-                "id",
+                "id"
               ],
               "properties": {
-                "id": { "type": "string" },
-              },
-            },
-          },
+                "id": { "type": "string" }
+              }
+            }
+          }
         }
       }
     })
@@ -194,7 +194,7 @@ describe JsonMatchers, "#match_json_schema" do
             "id": "1"
           }
         }
-      }],
+      }]
     })
 
     expect(json).to match_json_schema(posts_index)
