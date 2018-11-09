@@ -114,7 +114,7 @@ describe JsonMatchers, "#match_json_schema" do
 
     json = build(:response, {
       "data": [{
-        "id": 1,
+        "id": "1",
         "type": "Post",
         "attributes": {
           "id": 1,
