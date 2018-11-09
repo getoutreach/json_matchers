@@ -59,7 +59,7 @@ describe JsonMatchers, "#match_json_schema" do
     expect(json).to match_json_schema("api/v1/schema")
   end
 
-  it "Fails properly in local refs in referenced schema" do
+  it "supports invalidating the referenced schema when using local references" do
     create(:schema, name: "post", json: {
       "$schema": "https://json-schema.org/draft-04/schema#",
       "id": "file:/post.json#",
@@ -71,7 +71,7 @@ describe JsonMatchers, "#match_json_schema" do
             "name",
           ],
           "properties": {
-            "id": { "type": "number" },
+            "id": { "type": "string" },
             "name": { "type": "string" }
           }
         }
@@ -83,7 +83,7 @@ describe JsonMatchers, "#match_json_schema" do
         "attributes"
       ],
       "properties": {
-        "id": { "type": "number" },
+        "id": { "type": "string" },
         "type": { "type": "string" },
         "attributes": {
           "$ref": "#/definitions/attributes",
@@ -114,10 +114,10 @@ describe JsonMatchers, "#match_json_schema" do
 
     json = build(:response, {
       "data": [{
-        "id": "1",
+        "id": 1,
         "type": "Post",
         "attributes": {
-          "id": "1",
+          "id": 1,
           "name": "The Post's Name"
         }
       }]
@@ -146,7 +146,7 @@ describe JsonMatchers, "#match_json_schema" do
             "name",
           ],
           "properties": {
-            "id": { "type": "integer" },
+            "id": { "type": "string" },
             "name": { "type": "string" },
             "user": {
               "type": "object",
@@ -154,7 +154,7 @@ describe JsonMatchers, "#match_json_schema" do
                 "id",
               ],
               "properties": {
-                "id": { "type": "integer" },
+                "id": { "type": "string" },
               },
             },
           },
@@ -188,10 +188,10 @@ describe JsonMatchers, "#match_json_schema" do
         "id": "1",
         "type": "Post",
         "attributes": {
-          "id": 1,
+          "id": "1",
           "name": "The Post's Name",
           "user": {
-            "id": 1
+            "id": "1"
           }
         }
       }],
